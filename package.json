@@ -1,13 +1,12 @@
 {
   "name": "last-cursor-position",
   "main": "./lib/last-cursor-position",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Keeps a history of past cursor position to travel back to",
   "repository": "https://github.com/fcharron/last-cursor-position",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
