@@ -12,7 +12,6 @@ module.exports =
       atom.workspaceView.on 'cursor:moved', =>
          ed = atom.workspace.getActiveEditor()
          if ed? and @rewinding is false and @forwarding is false
-            console.log('updating positions')
             pos = ed.getCursorBufferPosition()
             @positionHistory.push({editor: ed, position: pos})
             #future positions get invalidated when cursor moves to a new position
@@ -24,7 +23,6 @@ module.exports =
       #record starting position
       ed = atom.workspace.getActiveEditor()
       if ed?
-         console.log('updating positions -> first load')
          pos = ed.getCursorBufferPosition()
          @positionHistory.push({editor: ed, position: pos})
       #bind events to callbacks
@@ -32,9 +30,6 @@ module.exports =
       atom.workspaceView.command 'last-cursor-position:next', => @next()
 
    previous: ->
-      console.log('previous called')
-      console.log('was rewinding') unless @wasrewinding is false
-      console.log('was forwarding') unless @wasforwarding is false
       #when changing direction, we need to store last position, but not move to it
       if @wasforwarding or @wasrewinding is false
          temp = @positionHistory.pop()
@@ -51,7 +46,6 @@ module.exports =
          foundeditor = true
          #move to right editor
          if pos.editor isnt atom.workspace.getActiveEditor()
-            console.log('wrong editor')
             testededitors = [atom.workspace.getActiveEditor()]
             until atom.workspace.getActiveEditor() is pos.editor
                atom.workspaceView.getActivePane().activateNextItem()
@@ -61,16 +55,11 @@ module.exports =
                   foundeditor = false
                   break
                testededitors.push(atom.workspace.getActiveEditor())
-               console.log('following editor')
          if foundeditor
             #move cursor to last position and scroll to it
             atom.workspace.getActiveEditor().setCursorBufferPosition(pos.position)
-         console.log('previous done')
 
    next: ->
-      console.log('next called')
-      console.log('was rewinding') unless @wasrewinding is false
-      console.log('was forwarding') unless @wasforwarding is false
       #when changing direction, we need to store last position, but not move to it
       if @wasrewinding or @wasforwarding is false
          temp = @positionFuture.pop()
@@ -87,7 +76,6 @@ module.exports =
          foundeditor = true
          #move to right editor
          if pos.editor isnt atom.workspace.getActiveEditor()
-            console.log('wrong editor')
             testededitors = [atom.workspace.getActiveEditor()]
             until atom.workspace.getActiveEditor() is pos.editor
                atom.workspaceView.getActivePane().activateNextItem()
@@ -97,8 +85,6 @@ module.exports =
                   foundeditor = false
                   break
                testededitors.push(atom.workspace.getActiveEditor())
-               console.log('following editor')
          if foundeditor
             #move cursor to last position and scroll to it
             atom.workspace.getActiveEditor().setCursorBufferPosition(pos.position)
-         console.log('next done')
