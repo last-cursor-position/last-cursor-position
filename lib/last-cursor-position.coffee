@@ -13,6 +13,11 @@ module.exports =
          ed = atom.workspace.getActiveEditor()
          if ed? and @rewinding is false and @forwarding is false
             pos = ed.getCursorBufferPosition()
+            if @positionHistory.length
+              {editor: lastEd, position: lastPos} = @positionHistory[-1..-1][0]
+              if ed is lastEd and
+                    Math.abs(lastPos.serialize()[0] - pos.serialize()[0]) < 3
+                return
             @positionHistory.push({editor: ed, position: pos})
             #future positions get invalidated when cursor moves to a new position
             @positionFuture = []
