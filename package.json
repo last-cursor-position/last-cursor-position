@@ -1,7 +1,7 @@
 {
   "name": "last-cursor-position",
   "main": "./lib/last-cursor-position",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Keeps a history of past cursor position to travel back to",
   "repository": "https://github.com/fcharron/last-cursor-position",
   "license": "MIT",
