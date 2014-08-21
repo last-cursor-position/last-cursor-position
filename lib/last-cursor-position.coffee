@@ -11,25 +11,36 @@ module.exports =
       #ask to be called back every time the cursor moves
       atom.workspaceView.on 'cursor:moved', =>
          ed = atom.workspace.getActiveEditor()
+         pane = atom.workspace.activePane
          if ed? and @rewinding is false and @forwarding is false
             pos = ed.getCursorBufferPosition()
             if @positionHistory.length
-              {editor: lastEd, position: lastPos} = @positionHistory[-1..-1][0]
-              if ed is lastEd and
-                    Math.abs(lastPos.serialize()[0] - pos.serialize()[0]) < 3
-                return
-            @positionHistory.push({editor: ed, position: pos})
+               {pane: lastPane, editor: lastEd, position: lastPos} = @positionHistory[-1..-1][0]
+               if pane is lastPane and ed is lastEd and
+                     Math.abs(lastPos.serialize()[0] - pos.serialize()[0]) < 3
+                  return
+            @positionHistory.push({pane: pane, editor: ed, position: pos})
             #future positions get invalidated when cursor moves to a new position
             @positionFuture = []
             @wasrewinding = false
             @wasforwarding = false
          @rewinding = false
          @forwarding = false
+
+      #clean history when pane is removed
+      atom.workspaceView.on 'pane:removed', (event, removedPaneView) =>
+         @positionHistory = @positionHistory.filter((pos) -> pos.pane != removedPaneView.model)
+
+      #clean history when paneItem (tab) is removed
+      atom.workspaceView.on 'pane:item-removed', (event, paneItem) =>
+         @positionHistory = @positionHistory.filter((pos) -> pos.editor != paneItem)
+
       #record starting position
       ed = atom.workspace.getActiveEditor()
-      if ed?
+      pane = atom.workspace.activePane
+      if pane? and ed?
          pos = ed.getCursorBufferPosition()
-         @positionHistory.push({editor: ed, position: pos})
+         @positionHistory.push({pane: pane, editor: ed, position: pos})
       #bind events to callbacks
       atom.workspaceView.command 'last-cursor-position:previous', => @previous()
       atom.workspaceView.command 'last-cursor-position:next', => @next()
@@ -50,19 +61,12 @@ module.exports =
          @wasforwarding = false
          foundeditor = true
          #move to right editor
+         if pos.pane isnt atom.workspace.activePane
+            pos.pane.activate()
          if pos.editor isnt atom.workspace.getActiveEditor()
-            testededitors = [atom.workspace.getActiveEditor()]
-            until atom.workspace.getActiveEditor() is pos.editor
-               atom.workspaceView.getActivePane().activateNextItem()
-               if atom.workspace.getActiveEditor() in testededitors
-                  #that editor does not exist anymore... reset history
-                  positionHistory = []
-                  foundeditor = false
-                  break
-               testededitors.push(atom.workspace.getActiveEditor())
-         if foundeditor
-            #move cursor to last position and scroll to it
-            atom.workspace.getActiveEditor().setCursorBufferPosition(pos.position)
+            atom.workspace.activePane.activateItem(pos.editor)
+         #move cursor to last position and scroll to it
+         atom.workspace.getActiveEditor().setCursorBufferPosition(pos.position)
 
    next: ->
       #when changing direction, we need to store last position, but not move to it
@@ -80,16 +84,9 @@ module.exports =
          @wasrewinding = false
          foundeditor = true
          #move to right editor
+         if pos.pane isnt atom.workspace.activePane
+            pos.pane.activate()
          if pos.editor isnt atom.workspace.getActiveEditor()
-            testededitors = [atom.workspace.getActiveEditor()]
-            until atom.workspace.getActiveEditor() is pos.editor
-               atom.workspaceView.getActivePane().activateNextItem()
-               if atom.workspace.getActiveEditor() in testededitors
-                  #that editor does not exist anymore... reset future
-                  positionFuture = []
-                  foundeditor = false
-                  break
-               testededitors.push(atom.workspace.getActiveEditor())
-         if foundeditor
-            #move cursor to last position and scroll to it
-            atom.workspace.getActiveEditor().setCursorBufferPosition(pos.position)
+            atom.workspace.activePane.activateItem(pos.editor)
+         #move cursor to last position and scroll to it
+         atom.workspace.getActiveEditor().setCursorBufferPosition(pos.position)
