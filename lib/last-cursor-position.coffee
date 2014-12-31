@@ -10,7 +10,7 @@ module.exports =
    activate: ->
       #ask to be called back every time the cursor moves
       atom.workspaceView.on 'cursor:moved', =>
-         ed = atom.workspace.getActiveEditor()
+         ed = atom.workspace.getActiveTextEditor()
          pane = atom.workspace.activePane
          if ed? and @rewinding is false and @forwarding is false
             pos = ed.getCursorBufferPosition()
@@ -36,7 +36,7 @@ module.exports =
          @positionHistory = @positionHistory.filter((pos) -> pos.editor != paneItem)
 
       #record starting position
-      ed = atom.workspace.getActiveEditor()
+      ed = atom.workspace.getActiveTextEditor()
       pane = atom.workspace.activePane
       if pane? and ed?
          pos = ed.getCursorBufferPosition()
@@ -63,10 +63,11 @@ module.exports =
          #move to right editor
          if pos.pane isnt atom.workspace.activePane
             pos.pane.activate()
-         if pos.editor isnt atom.workspace.getActiveEditor()
+         if pos.editor isnt atom.workspace.getActiveTextEditor()
             atom.workspace.activePane.activateItem(pos.editor)
          #move cursor to last position and scroll to it
-         atom.workspace.getActiveEditor().setCursorBufferPosition(pos.position)
+         atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position, autoscroll:false)
+         atom.workspace.getActiveTextEditor().scrollToCursorPosition(center:true)
 
    next: ->
       #when changing direction, we need to store last position, but not move to it
@@ -86,7 +87,8 @@ module.exports =
          #move to right editor
          if pos.pane isnt atom.workspace.activePane
             pos.pane.activate()
-         if pos.editor isnt atom.workspace.getActiveEditor()
+         if pos.editor isnt atom.workspace.getActiveTextEditor()
             atom.workspace.activePane.activateItem(pos.editor)
          #move cursor to last position and scroll to it
-         atom.workspace.getActiveEditor().setCursorBufferPosition(pos.position)
+         atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position, autoscroll:false)
+         atom.workspace.getActiveTextEditor().scrollToCursorPosition(center:true)
