@@ -83,7 +83,7 @@ module.exports =
             pos.pane.activate()
          if pos.editor isnt atom.workspace.getActiveTextEditor()
             #console.log("--Activating editor " + pos.editor.id)
-            atom.workspace.activePane.activateItem(pos.editor)
+            atom.workspace.getActivePane().activateItem(pos.editor)
          #move cursor to last position and scroll to it
          #console.log("--Moving cursor to new position")
          atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position, autoscroll:false)
@@ -112,7 +112,7 @@ module.exports =
             pos.pane.activate()
          if pos.editor isnt atom.workspace.getActiveTextEditor()
             #console.log("--Activating editor " + pos.editor.id)
-            atom.workspace.activePane.activateItem(pos.editor)
+            atom.workspace.getActivePane().activateItem(pos.editor)
          #move cursor to last position and scroll to it
          #console.log("--Moving cursor to new position")
          atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position, autoscroll:false)
