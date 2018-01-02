@@ -58,6 +58,11 @@ module.exports =
       @disposables.add atom.commands.add 'atom-workspace',
         'last-cursor-position:previous': => @previous()
         'last-cursor-position:next': => @next()
+        'last-cursor-position:push': => @push()
+
+   push: ->
+      activeEd = atom.workspace.getActiveTextEditor()
+      @positionHistory.push({pane: atom.workspace.getActivePane(), editor: activeEd, position: activeEd.getCursorBufferPosition()})
 
    previous: ->
       #console.log("Previous called")
