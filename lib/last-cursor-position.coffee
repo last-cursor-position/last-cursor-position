@@ -88,8 +88,9 @@ module.exports =
             activePane.activateItemAtIndex(editorIdx)
          #move cursor to last position and scroll to it
          #console.log("--Moving cursor to new position")
-         atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position, autoscroll:false)
-         atom.workspace.getActiveTextEditor().scrollToCursorPosition(center:true)
+         if pos.position
+           atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position, autoscroll:false)
+           atom.workspace.getActiveTextEditor().scrollToCursorPosition(center:true)
 
    next: ->
       #console.log("Next called")
@@ -119,8 +120,9 @@ module.exports =
             activePane.activateItemAtIndex(editorIdx)
          #move cursor to last position and scroll to it
          #console.log("--Moving cursor to new position")
-         atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position, autoscroll:false)
-         atom.workspace.getActiveTextEditor().scrollToCursorPosition(center:true)
+         if pos.position
+           atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position, autoscroll:false)
+           atom.workspace.getActiveTextEditor().scrollToCursorPosition(center:true)
 
    deactivate: ->
       @disposables.dispose()
