@@ -25,10 +25,11 @@ module.exports =
                   {pane: lastPane, editor: lastEd, position: lastPos} = @positionHistory[-1..-1][0]
                   if activePane is lastPane and activeEd is lastEd and
                         #ignore cursor pos changes < 3 lines
-                        Math.abs(lastPos.serialize()[0] - event.newBufferPosition.serialize()[0]) < 3
+                        Math.abs(lastPos.getStartBufferPosition().serialize()[0] - event.newBufferPosition.serialize()[0]) < 3
                      return
                #console.log("ActivePane id " + activePane.id)
-               @positionHistory.push({pane: activePane, editor: activeEd, position: event.newBufferPosition})
+               #position is a Marker that reamins logically stationary even as the buffer changes
+               @positionHistory.push({pane: activePane, editor: activeEd, position: activeEd.markBufferPosition(event.newBufferPosition)})
 
                #future positions get invalidated when cursor moves to a new position
                @positionFuture = []
@@ -52,7 +53,7 @@ module.exports =
       pane = atom.workspace.getActivePane()
       if pane? and ed?
          pos = ed.getCursorBufferPosition()
-         @positionHistory.push({pane: pane, editor: ed, position: pos})
+         @positionHistory.push({pane: pane, editor: ed, position: ed.markBufferPosition(pos)})
 
       #bind events to callbacks
       @disposables.add atom.commands.add 'atom-workspace',
@@ -62,7 +63,7 @@ module.exports =
 
    push: ->
       activeEd = atom.workspace.getActiveTextEditor()
-      @positionHistory.push({pane: atom.workspace.getActivePane(), editor: activeEd, position: activeEd.getCursorBufferPosition()})
+      @positionHistory.push({pane: atom.workspace.getActivePane(), editor: activeEd, position: activeEd.markBufferPosition(activeEd.getCursorBufferPosition())})
 
    previous: ->
       #console.log("Previous called")
@@ -94,7 +95,7 @@ module.exports =
          #move cursor to last position and scroll to it
          #console.log("--Moving cursor to new position")
          if pos.position
-           atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position, autoscroll:false)
+           atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position.getStartBufferPosition(), autoscroll:false)
            atom.workspace.getActiveTextEditor().scrollToCursorPosition(center:true)
 
    next: ->
@@ -126,7 +127,7 @@ module.exports =
          #move cursor to last position and scroll to it
          #console.log("--Moving cursor to new position")
          if pos.position
-           atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position, autoscroll:false)
+           atom.workspace.getActiveTextEditor().setCursorBufferPosition(pos.position.getStartBufferPosition(), autoscroll:false)
            atom.workspace.getActiveTextEditor().scrollToCursorPosition(center:true)
 
    deactivate: ->
