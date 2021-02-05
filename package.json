@@ -3,7 +3,7 @@
   "main": "./lib/last-cursor-position",
   "version": "1.0.0",
   "description": "Keeps a history of past cursor position to travel back to",
-  "repository": "https://github.com/fcharron/last-cursor-position",
+  "repository": "https://github.com/last-cursor-position/last-cursor-position",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
