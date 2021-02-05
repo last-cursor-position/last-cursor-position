@@ -1,7 +1,10 @@
 # last-cursor-position package
 
-This package keeps a history of past cursor positions and allows to travel
-back to them.
+Update: After three years this project is coming back, The new maintainer is working on bringing the plugin up to date.
+
+Last Cursor Position is a package for Atom that keeps a history of past cursor positions and allows to travel
+Between them.
+
 
 * `alt--` to travel to previous cursor position
 * `alt-_` to undo previous travel

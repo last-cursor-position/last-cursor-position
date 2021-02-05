@@ -7,6 +7,6 @@
 
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
-'atom-workspace':
+'atom-text-editor':
   'alt--': 'last-cursor-position:previous'
   'alt-_': 'last-cursor-position:next'
