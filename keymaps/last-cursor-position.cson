@@ -10,3 +10,4 @@
 'atom-text-editor':
   'alt--': 'last-cursor-position:previous'
   'alt-_': 'last-cursor-position:next'
+  'alt-R': 'last-cursor-position:clear'
