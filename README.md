@@ -8,5 +8,6 @@ Between them.
 
 * `alt--` to travel to previous cursor position
 * `alt-_` to undo previous travel
+* `alt-R` will clear all previous cursor positions in all tabs and windows
 
 ![](http://i.imgur.com/NjtH1SJ.gif)
